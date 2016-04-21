@@ -1,0 +1,32 @@
+{
+  "name": "zetta-meter-interface-unit-mock-driver",
+  "version": "0.0.1",
+  "description": "Mock Zetta meter interface unit.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "zetta",
+    "meter-interface-unit"
+  ],
+  "author": "Brian Mulloy <brian@landlessness.net>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/landlessness/zetta-meter-interface-unit-mock-driver"
+  },
+  "bugs": {
+    "url": "https://github.com/landlessness/zetta-meter-interface-unit-mock-driver/issues"
+  },
+  "homepage": "https://github.com/landlessness/zetta-meter-interface-unit-mock-driver",
+  "dependencies": {
+    "zetta-device": "^0.19.0",
+    "zetta-scout": "^0.7.0",
+    "minimist": "^1.2.0"
+  },
+  "directories": {
+    "example": "example"
+  },
+  "devDependencies": {}
+}

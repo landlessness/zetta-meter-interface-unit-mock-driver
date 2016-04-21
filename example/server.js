@@ -57,6 +57,6 @@ var collectors = [
 zetta()
   .use(MeterInterfaceUnit)
   .properties(collectors[COLLECTER_ID])
-  .name('Test 01')
+  .name(collectors[COLLECTER_ID].CollectorName)
   .link('http://dev.zettaapi.org')
   .listen(1337);

@@ -4,6 +4,7 @@ var argv = require('minimist')(process.argv.slice(2));
 
 
 var COLLECTER_ID = argv['c'] || 0;
+var PORT = argv['p'] || 1337;
 
 var collectors = [
   {
@@ -53,10 +54,14 @@ var collectors = [
   }
 ];
 
+var collector = collectors[COLLECTER_ID];
+var SERVER_NAME = collector.CollectorName;
 
 zetta()
   .use(MeterInterfaceUnit)
-  .properties(collectors[COLLECTER_ID])
-  .name(collectors[COLLECTER_ID].CollectorName)
+  .properties(collector)
+  .name(SERVER_NAME)
   .link('http://dev.zettaapi.org')
-  .listen(1337);
+  .listen(PORT, function(){
+    console.log('Zetta server ' + SERVER_NAME + ' is running at http://127.0.0.1:' + PORT);
+});

@@ -1,8 +1,6 @@
 var Device = require('zetta-device');
 var util = require('util');
 
-var TIMEOUT = 3000;
-
 var MeterInterfaceUnit = module.exports = function() {
   Device.call(this);
   
@@ -11,6 +9,13 @@ var MeterInterfaceUnit = module.exports = function() {
     this[miuProperties[i]] = arguments[0][miuProperties[i]];
   }
   
+  this.LeakState = 0;
+  this.BackflowState = 0;
+  this.Reading = 111111;
+  this.AlarmType = 0;
+  this._increment = 15;
+  this._timeOut = null;
+  this._counter = 0;
 };
 util.inherits(MeterInterfaceUnit, Device);
 
@@ -20,58 +25,76 @@ MeterInterfaceUnit.prototype.init = function(config) {
     .name('MIU ' + this.MiuId)
     .state(state)
     .type('miu')
-    .when('disarmed', {allow: ['arm-stay', 'arm-away']})
-    .when('armed-stay', {allow: ['disarm']})
-    .when('armed-away', {allow: ['disarm']})
-    .when('arming-stay', {allow: []})
-    .when('arming-away', {allow: []})
-    .when('disarming', {allow: []})
-    .map('arm-stay', this.armStay)
-    .map('arm-away', this.armAway)
-    .map('disarm', this.disarm);
+    .when('Active', {allow: ['make-inactive', '_throw-alarm']})
+    .when('Inactive', {allow: ['make-active']})
+    .map('make-inactive', this.makeInactive)
+    .map('make-active', this.makeActive)
+    .map('_throw-alarm', this._throwAlarm, [{name: 'AlarmType', type: 'text'}])
+    .monitor('AlarmType')
+    .monitor('LeakState')
+    .monitor('BackflowState')
+    .monitor('Reading');
 
-  this.style = {properties: {stateImage: {
-    tintMode: 'original',
-    url: 'http://www.necowater.com/wp-content/uploads/2015/09/R900-ed.jpg'
-  }}};
+    this.style = {
+      properties: {
+        stateImage: {
+          tintMode: 'original',
+          url: 'http://www.necowater.com/wp-content/uploads/2015/09/R900-ed.jpg'
+        }
+      },
+      actions: {'_throw-alarm': {display: 'none'}}
+    };
+
+  if (state === 'Active') {
+    this._startMockData();
+  }
 
 };
 
-MeterInterfaceUnit.prototype.armStay = function(cb) {
-  
-  this.state = 'arming-stay';
+
+MeterInterfaceUnit.prototype.makeActive = function(cb) {
+  this.state = 'Active';
+  this._startMockData();
   cb();
-
-  var self = this;
-  setTimeout(function(){
-    self.state = 'armed-stay';
-    cb();
-  }, TIMEOUT);
-
 }
 
-MeterInterfaceUnit.prototype.armAway = function(cb) {
-
-  this.state = 'arming-away';
+MeterInterfaceUnit.prototype.makeInactive = function(cb) {
+  this.state = 'Inactive'
+  this._stopMockData();
   cb();
-
-  var self = this;
-  setTimeout(function(){
-    self.state = 'armed-away';
-    cb();
-  }, TIMEOUT);
-
 }
 
-MeterInterfaceUnit.prototype.disarm = function(cb) {
-
-  this.state = 'disarming';
-  cb();
-
+MeterInterfaceUnit.prototype._startMockData = function(cb) {
   var self = this;
-  setTimeout(function(){
-    self.state = 'disarmed';
-    cb();
-  }, TIMEOUT);
+  this._timeOut = setInterval(function() {
+    self.Reading = self.Reading + 51234;
+  }, 100);
+  this._alarmTimeOut = setInterval(function() {
+    if (self.available('_throw-alarm')) {
+      self.call('_throw-alarm', Math.floor(Math.random() * 4));
+    }
+  }, 1000);
+}
 
+MeterInterfaceUnit.prototype._stopMockData = function(cb) {
+  clearTimeout(this._timeOut);
+  clearTimeout(this._alarmTimeOut);
+}
+
+MeterInterfaceUnit.prototype._throwAlarm = function(alarmType, cb) {
+  this.AlarmType = alarmType;
+  if (alarmType === 0) {
+    this.LeakState = 0;
+    this.BackflowState = 0;
+  } else if (alarmType === 1) {
+    this.LeakState = 0;
+    this.BackflowState = 1;
+  } else if (alarmType === 2) {
+    this.LeakState = 0;
+    this.BackflowState = 2;
+  } else if (alarmType === 3) {
+    this.LeakState = 1;
+    this.BackflowState = 0;
+  }
+  cb();
 }

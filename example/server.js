@@ -20,7 +20,27 @@ var collectors = [
     SyncNumReads: 100,
     SyncNumProfiles: 99,
     SyncNumConfigs: 5,
-    SyncNumAlarms: 1
+    SyncNumAlarms: 1,
+    style: {
+      properties: {
+        foregroundColor: {
+          decimal: {
+            red: 171,
+            green: 182,
+            blue: 191
+          },
+          hex: "#ABB6BF"
+        },
+        backgroundColor: {
+          decimal: {
+            red: 0,
+            green: 80,
+            blue: 154
+          },
+          hex: "#00509A"
+        }
+      }
+    }
   },
   {
     CollectorID: '12345_0001',
@@ -35,7 +55,27 @@ var collectors = [
     SyncNumReads: 100,
     SyncNumProfiles: 99,
     SyncNumConfigs: 5,
-    SyncNumAlarms: 1
+    SyncNumAlarms: 1,
+    style: {
+      properties: {
+        foregroundColor: {
+          decimal: {
+            red: 255,
+            green: 255,
+            blue: 255
+          },
+          hex: "#FFFFFF"
+        },
+        backgroundColor: {
+          decimal: {
+            red: 224,
+            green: 111,
+            blue: 44
+          },
+          hex: "#E06F2C"
+        }
+      }
+    }
   },
   {
     CollectorID: '12345_0002',
@@ -50,7 +90,27 @@ var collectors = [
     SyncNumReads: 100,
     SyncNumProfiles: 99,
     SyncNumConfigs: 5,
-    SyncNumAlarms: 1
+    SyncNumAlarms: 1,
+    style: {
+      properties: {
+        backgroundColor: {
+          decimal: {
+            red: 255,
+            green: 255,
+            blue: 255
+          },
+          hex: "#FFFFFF"
+        },
+        foregroundColor: {
+          decimal: {
+            red: 224,
+            green: 111,
+            blue: 44
+          },
+          hex: "#E06F2C"
+        }
+      }
+    }
   }
 ];
 
